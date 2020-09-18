@@ -13,7 +13,7 @@
 
             setInterval(mainloop, 1000 / 50);
         }
-
+         //player variables
         const PLAYER_SIZE = 40;
         var playerXpos = 280;
         var playerYpos = 560;
@@ -27,13 +27,25 @@
         var spaceKeyPressed = false;
 
         const SPACE_BAR = 32;
+        
+    //enemy vars
+        var Enemys = [];
+        var settingUp = true;
+        var totalEnemys = 5;
+
 
         function mainloop() {
+            if(settingUp){
+               setUp();
+                settingUp = false;
+            }
+            
             colorRect(0, 0, canvas.width, canvas.height, 'darkgrey'); // bg     // canvas color
             colorRect(0, canvas.height - groundY, canvas.width, groundY, 'grey'); // bg   //canvas color
             colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'yellow'); // bg //player size
 
             PlayerMove();
+            DrawEnemys();
         }
 
         function keyPressed(evt) {
@@ -58,7 +70,7 @@
 
                 playerYpos -= yVel;
                 yVel -= 0.2;
-                
+
                 if (playerYpos + PLAYER_SIZE > canvas.height - groundY) {
                     yVel = 0;
                     playerYpos = canvas.height - groundY - PLAYER_SIZE;
@@ -67,6 +79,89 @@
             }
 
         }
+
+        function setUp() {
+            for(var i = 0; i < totalEnemys; i++){
+                
+            var EnemySize = Math.floor(Math.random() * (100 - 10)) + 10;
+            var EnemyXpos = Math.floor(Math.random() * ((canvas.width - EnemySize) - 0)) + 0;
+            var EnemyYpos = Math.floor(Math.random() * ((canvas.height - EnemySize) - 0)) + 0;
+            var EnemyYspeed = Math.floor(Math.random() * (10 - 1)) + 1;
+            var EnemyXspeed = Math.floor(Math.random() * (10 - 1)) + 1;
+
+
+
+            var Enemy = {
+                EnemyXpos: EnemyXpos,
+                EnemyYpos: EnemyYpos,
+                EnemySize: EnemySize,
+                EnemyXspeed: EnemyXspeed,
+                EnemyYspeed: EnemyYspeed,
+            }
+
+
+
+            Enemys.push(Enemy);
+
+            }
+
+
+        } // end func 
+        function DrawEnemys() {
+            Enemys.forEach(function(Enemy, i) {
+                colorRect(Enemy.EnemyXpos, Enemy.EnemyYpos, Enemy.EnemySize, Enemy.EnemySize, 'cyan');
+            });
+        }
+
+
+
+//        function EnemyRandomSpawns() {
+//            math.random() * canvas.width
+//        };
+
+
+
+        function moveEnemys() {
+            Enemys.forEach(function(Enemy, i) {
+                Enemy.EnemyXpos += Enemy.EnemyXspeed; // move x
+                Enemy.EnemyYpos += Enemy.EnemyYspeed; // move y
+
+
+
+                //Right edge bounce
+                if (Enemy.EnemyXpos + Enemy.EnemySize > canvas.width) {
+                    Enemy.EnemyXspeed *= -1;
+
+
+
+                }
+
+
+
+                //Left Edge Bounce
+                if (Enemy.EnemyXpos < 0) {
+                    Enemy.EnemyXspeed *= -1;
+                }
+
+
+
+                if (Enemy.EnemyYpos > canvas.height) {
+                    Enemy.EnemyYpos = 0 - Enemy.EnemySize;
+                    Enemy.EnemySize = Math.floor(Math.random() * (80 - 20)) + 10;
+                    Enemy.EnemyYspeed = Math.floor(Math.random() * (10 - 1)) + 1;
+                    Enemy.EnemyXspeed = Math.floor(Math.random() * (10 - 1)) + 1;
+
+
+
+                }
+                if (Enemy.EnemyYpos + Enemy.EnemySize > PlayerYpos && Enemy.EnemyYpos < PlayerYpos + PLAYER_SIZE && Enemy.EnemyXpos + Enemy.EnemySize > PlayerXpos && Enemy.EnemyXpos < PlayerXpos + PLAYER_SIZE) {
+                    PlayerXpos = 100;
+                    PlayerYpos = canvas.height - PLAYER_SIZE;
+                    Health--;
+                    console.log('Health:' + Health);
+                }
+            });
+        } //end func
 
 
         function colorRect(x, y, w, h, c) {
