@@ -14,14 +14,15 @@
             setInterval(mainloop, 1000 / 50);
         }
          //player variables
-        const PLAYER_SIZE = 40;
+        const PLAYER_SIZE = 100;
         var playerXpos = 280;
         var playerYpos = 560;
         var playerXspeed = 5;
         var playerYspeed = 5;
         var yVel = 0;
         var jumping = false;
-
+        var bird = new Image();
+        bird.src = 'bunga.png'
         var groundY = 200;
 
         var spaceKeyPressed = false;
@@ -45,8 +46,7 @@
             
             colorRect(0, 0, canvas.width, canvas.height, 'darkgrey'); // bg     // canvas color
             drawImg(back,0,0,canvas.width,canvas.height);
-            colorRect(0, canvas.height - groundY, canvas.width, groundY, 'grey'); // bg   //canvas color
-            colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'yellow'); // bg //player size
+            drawImg(bird,playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'yellow'); // bg //player size
 
             PlayerMove();
             DrawEnemys();
@@ -61,7 +61,7 @@
         
         
         function keyPressed(evt) {
-            if (evt.keyCode == SPACE_BAR && jumping == false) {
+            if (evt.keyCode == SPACE_BAR) {
                 spaceKeyPressed = true;
                 jumping = true;
             }
@@ -75,13 +75,13 @@
         }
 
         function PlayerMove() {
-            if (spaceKeyPressed && jumping == false) {
-                yVel = 10;
+            if (spaceKeyPressed) {
+                yVel = 8;
             }
             if (jumping) {
 
                 playerYpos -= yVel;
-                yVel -= 0.2;
+                yVel -= 0.3;
 
                 if (playerYpos + PLAYER_SIZE > canvas.height - groundY) {
                     yVel = 0;
